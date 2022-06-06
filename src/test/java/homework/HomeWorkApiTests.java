@@ -34,8 +34,8 @@ public class HomeWorkApiTests {
         users.forEach(x-> assertTrue(x.getAvatar().contains(x.getId().toString())));
         assertTrue(users.stream().allMatch(x-> x.getEmail().endsWith("@reqres.in")));
         List<String> avatars = users.stream().map(UserData::getAvatar).collect(Collectors.toList());
-        for (int i = 0; i < avatars.size(); i++) {
-            assertTrue(avatars.get(i).endsWith("image.jpg"));
+        for (String avatar : avatars) {
+            assertTrue(avatar.endsWith("image.jpg"));
         }
     }
 
