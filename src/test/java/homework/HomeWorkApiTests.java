@@ -5,7 +5,6 @@ import api.UnsuccessfulRegisterData;
 import api.UserData;
 import org.junit.jupiter.api.Test;
 import specifications.Specs;
-
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
