@@ -1,4 +1,4 @@
-package api;
+package api.model;
 
 public class UnsuccessfulRegisterData {
     private String email;

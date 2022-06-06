@@ -1,54 +1,66 @@
 package homework;
 
-import api.CreateData;
-import api.UnsuccessfulRegisterData;
-import api.UserData;
+import api.model.CreateData;
+import api.model.UnsuccessfulRegisterData;
+import api.model.UserData;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import specifications.Specs;
-import java.io.File;
+import mainSpecifications.TestBase;
+import testData.EndpointsData;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static io.restassured.RestAssured.given;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HomeWorkApiTests {
-
-    private static final String
-            URL = "https://reqres.in/",
-            LIST_USER_POINT = "api/users?page=2",
-            CREATE_POINT = "api/users",
-            SINGLE_USER = "api/users/2",
-            WRONG_EMAIL = "sydney@fife",
-            REGISTER_POINT = "api/register";
-    UnsuccessfulRegisterData unsuccessfulRegisterData = new UnsuccessfulRegisterData(WRONG_EMAIL);
+public class HomeWorkApiTests extends TestBase {
 
     @Test
     public void listUsersTest() {
-        Specs.specInstall(Specs.specRequest(URL));
         List<UserData> users = given()
                 .when()
-                .get(LIST_USER_POINT)
+                .get(EndpointsData.LIST_USER_POINT.getTitle())
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
-        users.forEach(x-> assertTrue(x.getAvatar().contains(x.getId().toString())));
-        assertTrue(users.stream().allMatch(x-> x.getEmail().endsWith("@reqres.in")));
+        users.forEach(x -> assertTrue(x.getAvatar().contains(x.getId().toString())));
+        assertTrue(users.stream().allMatch(x -> x.getEmail().endsWith("@reqres.in")));
+        assertTrue(users.stream().allMatch(x -> x.getAvatar().endsWith("image.jpg")));
+    }
+
+    @Test
+    public void listUsersTestWithIteration() {
+        List<UserData> users = given()
+                .when()
+                .get(EndpointsData.LIST_USER_POINT.getTitle())
+                .then().log().all()
+                .extract().body().jsonPath().getList("data", UserData.class);
+        users.forEach(x -> assertTrue(x.getAvatar().contains(x.getId().toString())));
+        assertTrue(users.stream().allMatch(x -> x.getEmail().endsWith("@reqres.in")));
         List<String> avatars = users.stream().map(UserData::getAvatar).collect(Collectors.toList());
+        List<String> emails = users.stream().map(UserData::getEmail).collect(Collectors.toList());
         for (String avatar : avatars) {
             assertTrue(avatar.endsWith("image.jpg"));
+        }
+        for (String email : emails) {
+            assertTrue(email.endsWith("@reqres.in"));
         }
     }
 
     @Test
     public void createTest() {
-        Specs.specInstall(Specs.specRequest(URL));
         String name = "morpheus";
         String job = "leader";
         CreateData createData = new CreateData(name, job);
         given()
                 .body(createData)
                 .when()
-                .post(CREATE_POINT)
+                .post(EndpointsData.CREATE_POINT.getTitle())
                 .then().log().all()
                 .extract().as(CreateData.class);
         assertEquals(name, createData.getName());
@@ -57,46 +69,47 @@ public class HomeWorkApiTests {
 
     @Test
     public void singleUserTest() {
-        Specs.specInstall(Specs.specRequest(URL));
         given()
                 .when()
-                .get(SINGLE_USER)
+                .get(EndpointsData.SINGLE_USER.getTitle())
                 .then().log().all()
                 .body("data.id", is(2));
     }
 
     @Test
     public void deleteUserTest() {
-        Specs.specInstall(Specs.specRequest(URL));
         given()
                 .when()
-                .delete(SINGLE_USER)
+                .delete(EndpointsData.SINGLE_USER.getTitle())
                 .then().log().status()
                 .statusCode(204);
     }
 
     @Test
     public void unsuccessfulRegisterTest() {
-        Specs.specInstall(Specs.specRequest(URL));
         given()
-                .body(unsuccessfulRegisterData)
+                .body(new UnsuccessfulRegisterData(EndpointsData.WRONG_EMAIL.getTitle()))
                 .when()
-                .post(REGISTER_POINT)
+                .post(EndpointsData.REGISTER_POINT.getTitle())
                 .then().log().all()
                 .statusCode(400)
-                .body("error", is("Missing password"));
+                .body("error", is("Missing email or username"));
     }
 
     @Test
-    public void unsuccessfulRegisterWithFilePathTest() {
-        Specs.specInstall(Specs.specRequest(URL));
-        File file = new File("src/test/java/jsons/unsuccessfulRegister.json");
-        given()
-                .body(file)
-                .when()
-                .post(REGISTER_POINT)
-                .then().log().all()
-                .statusCode(400)
-                .body("error", is("Missing password"));
+    public void unsuccessfulRegisterWithFilePathTest() throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (InputStream is = classLoader.getResourceAsStream("jsons/unsuccessfulRegister.json")) {
+            String json = (new String(is.readAllBytes(), UTF_8));
+            JsonNode jsonNode = objectMapper.readTree(json);
+            given()
+                    .body(jsonNode)
+                    .when()
+                    .post(EndpointsData.REGISTER_POINT.getTitle())
+                    .then().log().all()
+                    .statusCode(400)
+                    .body("error", is("Missing email or username"));
+        }
     }
 }
