@@ -1,8 +1,11 @@
 package api.model;
 
+import api.iModel.ICreateData;
+
 import java.util.Date;
 
-public class CreateData {
+public class CreateData implements ICreateData {
+
     private String name;
     private String job;
     private String id;
@@ -23,18 +26,22 @@ public class CreateData {
         this.job = job;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getJob() {
         return job;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public Date getCreatedAt() {
         return createdAt;
     }

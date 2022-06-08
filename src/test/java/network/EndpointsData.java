@@ -1,4 +1,4 @@
-package testData;
+package network;
 
 public enum EndpointsData {
 
@@ -8,16 +8,9 @@ public enum EndpointsData {
     WRONG_EMAIL("sydney@fife"),
     REGISTER_POINT("api/register");
 
-    private String title;
-
-    EndpointsData() {
-    }
+    public final String title;
 
     EndpointsData(String title) {
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
     }
 }

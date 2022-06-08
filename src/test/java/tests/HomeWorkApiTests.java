@@ -1,13 +1,13 @@
-package homework;
+package tests;
 
 import api.model.CreateData;
-import api.model.UnsuccessfulRegisterData;
+import api.model.NegativeRegistrationData;
 import api.model.UserData;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import mainSpecifications.TestBase;
-import testData.EndpointsData;
+import network.EndpointsData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,7 @@ public class HomeWorkApiTests extends TestBase {
     public void listUsersTest() {
         List<UserData> users = given()
                 .when()
-                .get(EndpointsData.LIST_USER_POINT.getTitle())
+                .get(EndpointsData.LIST_USER_POINT.title)
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
         users.forEach(x -> assertTrue(x.getAvatar().contains(x.getId().toString())));
@@ -37,7 +37,7 @@ public class HomeWorkApiTests extends TestBase {
     public void listUsersTestWithIteration() {
         List<UserData> users = given()
                 .when()
-                .get(EndpointsData.LIST_USER_POINT.getTitle())
+                .get(EndpointsData.LIST_USER_POINT.title)
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
         users.forEach(x -> assertTrue(x.getAvatar().contains(x.getId().toString())));
@@ -60,7 +60,7 @@ public class HomeWorkApiTests extends TestBase {
         given()
                 .body(createData)
                 .when()
-                .post(EndpointsData.CREATE_POINT.getTitle())
+                .post(EndpointsData.CREATE_POINT.title)
                 .then().log().all()
                 .extract().as(CreateData.class);
         assertEquals(name, createData.getName());
@@ -71,7 +71,7 @@ public class HomeWorkApiTests extends TestBase {
     public void singleUserTest() {
         given()
                 .when()
-                .get(EndpointsData.SINGLE_USER.getTitle())
+                .get(EndpointsData.SINGLE_USER.title)
                 .then().log().all()
                 .body("data.id", is(2));
     }
@@ -80,7 +80,7 @@ public class HomeWorkApiTests extends TestBase {
     public void deleteUserTest() {
         given()
                 .when()
-                .delete(EndpointsData.SINGLE_USER.getTitle())
+                .delete(EndpointsData.SINGLE_USER.title)
                 .then().log().status()
                 .statusCode(204);
     }
@@ -88,9 +88,9 @@ public class HomeWorkApiTests extends TestBase {
     @Test
     public void unsuccessfulRegisterTest() {
         given()
-                .body(new UnsuccessfulRegisterData(EndpointsData.WRONG_EMAIL.getTitle()))
+                .body(new NegativeRegistrationData(EndpointsData.WRONG_EMAIL.title))
                 .when()
-                .post(EndpointsData.REGISTER_POINT.getTitle())
+                .post(EndpointsData.REGISTER_POINT.title)
                 .then().log().all()
                 .statusCode(400)
                 .body("error", is("Missing email or username"));
@@ -106,7 +106,7 @@ public class HomeWorkApiTests extends TestBase {
             given()
                     .body(jsonNode)
                     .when()
-                    .post(EndpointsData.REGISTER_POINT.getTitle())
+                    .post(EndpointsData.REGISTER_POINT.title)
                     .then().log().all()
                     .statusCode(400)
                     .body("error", is("Missing email or username"));
