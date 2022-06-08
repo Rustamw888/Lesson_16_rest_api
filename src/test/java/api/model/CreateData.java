@@ -14,35 +14,44 @@ public class CreateData implements ICreateData {
     public CreateData() {
     }
 
-    public CreateData(String name, String job, String id, Date createdAt) {
-        this.name = name;
-        this.job = job;
-        this.id = id;
-        this.createdAt = createdAt;
-    }
-
-    public CreateData(String name, String job) {
-        this.name = name;
-        this.job = job;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public String getJob() {
         return job;
     }
 
-    @Override
     public String getId() {
         return id;
     }
 
-    @Override
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public CreateData setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public CreateData setJob(String job) {
+        this.job = job;
+        return this;
+    }
+
+    public CreateData setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public Date setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+        return createdAt;
+    }
+
+    @Override
+    public CreateData build() {
+        return this;
     }
 }

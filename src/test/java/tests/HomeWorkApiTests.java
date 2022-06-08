@@ -56,7 +56,7 @@ public class HomeWorkApiTests extends TestBase {
     public void createTest() {
         String name = "morpheus";
         String job = "leader";
-        CreateData createData = new CreateData(name, job);
+        CreateData createData = new CreateData().setName(name).setJob(job).build();
         given()
                 .body(createData)
                 .when()

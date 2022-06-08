@@ -16,14 +16,6 @@ public class UserData implements IUserData {
     public UserData() {
     }
 
-    public UserData(Integer id, String email, String firstName, String lastName, String avatar) {
-        this.id = id;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.avatar = avatar;
-    }
-
     @Override
     public Integer getId() {
         return id;
@@ -47,5 +39,25 @@ public class UserData implements IUserData {
     @Override
     public String getAvatar() {
         return avatar;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
