@@ -8,9 +8,12 @@ repositories {
 
 dependencies {
     testImplementation(
-            "io.rest-assured:rest-assured:5.1.0",
-            "org.junit.jupiter:junit-jupiter:5.8.2",
-            "org.slf4j:slf4j-simple:1.7.36"
+            'io.rest-assured:rest-assured:5.1.0',
+            'org.junit.jupiter:junit-jupiter:5.8.2',
+            'org.slf4j:slf4j-simple:1.7.36',
+            'com.fasterxml.jackson.core:jackson-databind:2.9.5',
+            'org.assertj:assertj-core:3.22.0',
+            'com.google.code.gson:gson:2.9.0'
     )
 }
 
